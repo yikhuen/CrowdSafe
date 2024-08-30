@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from flask import Flask, jsonify
+from flask import jsonify
 
 def handler(request):
     grid_size = 10
@@ -11,7 +11,6 @@ def handler(request):
     for step in range(steps):
         grid = np.zeros((grid_size, grid_size))
 
-        # Random example logic for crowd movement; replace with actual Social Force Model logic
         entrance = (0, 0)
         exit = (9, 9)
         position = entrance
@@ -25,4 +24,5 @@ def handler(request):
         grid_snapshots.append(grid.tolist())
 
     return jsonify(grid_snapshots)
+
 

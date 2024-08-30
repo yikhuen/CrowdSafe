@@ -10,3 +10,4 @@
       { "src": "/api/simulate", "dest": "/api/simulate.py" }
     ]
   }
+  
