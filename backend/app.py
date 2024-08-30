@@ -41,13 +41,13 @@ def orca_velocity(velocities, positions, preferred_velocity):
                     if distance < combined_radius:
                         orca_velocity -= relative_position * (combined_radius_sq / (distance ** 2))
         
-        # Avoid barriers
+        # Strongly avoid barriers
         for barrier in [barrier1, barrier2]:
             relative_position = barrier - positions[i]
             distance = np.linalg.norm(relative_position)
-            if distance > 0 and distance < 15:  # Avoid the barrier within 15 meters
-                avoidance_strength = (15 - distance) / 15  # Stronger repulsion closer to the barrier
-                orca_velocity -= avoidance_strength * relative_position / distance
+            if distance > 0 and distance < 20:  # Strongly avoid the barrier within 20 meters
+                avoidance_strength = (20 - distance) / distance  # Strong repulsion when closer to the barrier
+                orca_velocity -= 10 * avoidance_strength * relative_position / distance
         
         new_velocities[i] = orca_velocity
     
@@ -121,6 +121,7 @@ def simulate():
 # Start the Flask application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
