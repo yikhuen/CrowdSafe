@@ -13,14 +13,15 @@ entry_box = np.array([[50, 50], [150, 150]])  # Top-left and bottom-right corner
 stage_box = np.array([[250, 250], [350, 350]])  # Stage box
 exit_box = np.array([[450, 450], [550, 550]])  # Exit box
 
-# Initialize positions at the entry box
+# Initialize positions and velocities
 positions = np.random.rand(num_agents, 2) * (entry_box[1] - entry_box[0]) + entry_box[0]
-
-# Initialize velocities
 velocities = np.zeros((num_agents, 2))
 
-# ORCA parameters
-time_horizon = 10  # Time horizon for collision prediction
+def reset_positions():
+    """Reset the positions to start at the entry box."""
+    global positions, velocities
+    positions = np.random.rand(num_agents, 2) * (entry_box[1] - entry_box[0]) + entry_box[0]
+    velocities = np.zeros((num_agents, 2))
 
 def orca_velocity(velocities, positions, preferred_velocity):
     new_velocities = np.copy(velocities)
@@ -47,6 +48,7 @@ def social_force_model(phase):
     
     # Define the target point based on the current phase
     if phase == 'to_entry':
+        reset_positions()  # Reset positions to start at the entry box
         target_box = entry_box
     elif phase == 'to_stage':
         target_box = stage_box
@@ -95,6 +97,7 @@ def simulate():
 # Start the Flask application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
