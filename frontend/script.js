@@ -40,6 +40,11 @@ function updateTimer() {
     timerElement.innerText = ` Time: ${simulatedMinutes}m ${simulatedSeconds}s`;
 }
 
+// Function to calculate Euclidean distance
+function calculateDistance(point1, point2) {
+    return Math.sqrt(Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2));
+}
+
 // Function to update the scatter plot with new data
 function updateData(data) {
     const dots = svg.selectAll(".dot")
@@ -53,7 +58,17 @@ function updateData(data) {
         .duration(updateInterval)  // Match the transition duration with the update interval
         .ease(d3.easeLinear)  // Use linear easing for constant speed
         .attr("cx", d => d[0])
-        .attr("cy", d => d[1]);
+        .attr("cy", d => d[1])
+        .style("fill", function(d, i) {
+            // Calculate the number of neighbors within 1 meter
+            const neighbors = data.filter((other, j) => {
+                if (i === j) return false;  // Skip itself
+                return calculateDistance(d, other) < 1;
+            });
+
+            // Change color based on the number of neighbors
+            return neighbors.length >= 5 ? "red" : "steelblue";
+        });
 
     dots.exit().remove();
 }
@@ -89,6 +104,7 @@ document.getElementById("simulate").addEventListener("click", function() {
         }
     }, updateInterval);
 });
+
 
 
 
