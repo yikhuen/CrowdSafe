@@ -12,17 +12,14 @@ exit_point = np.array([500, 500])
 stage_point = np.array([300, 300])
 divider_point = np.array([300, 100])
 
-# Initialize positions randomly near the entry point
-positions = np.random.rand(num_agents, 2) * 50 + entry_point
+# Initialize positions at the entry point
+positions = np.random.rand(num_agents, 2) * 10 + entry_point  # Start close to the entry point
 
 # Initialize velocities
 velocities = np.zeros((num_agents, 2))
 
 # ORCA parameters
 time_horizon = 10  # Time horizon for collision prediction
-
-# Phase control
-phase = 'to_stage'  # 'to_stage' -> 'to_exit'
 
 def orca_velocity(velocities, positions, preferred_velocity):
     new_velocities = np.copy(velocities)
@@ -35,7 +32,6 @@ def orca_velocity(velocities, positions, preferred_velocity):
                 relative_velocity = velocities[j] - velocities[i]
                 distance = np.linalg.norm(relative_position)
                 if distance > 0:
-                    # Predict possible collision and adjust velocity
                     combined_radius = 10  # Radius sum for collision
                     combined_radius_sq = combined_radius ** 2
                     if distance < combined_radius:
@@ -45,17 +41,19 @@ def orca_velocity(velocities, positions, preferred_velocity):
     
     return new_velocities
 
-def social_force_model():
-    global positions, velocities, phase
+def social_force_model(phase):
+    global positions, velocities
     
     # Define the target point based on the current phase
-    if phase == 'to_stage':
+    if phase == 'to_entry':
+        target_point = entry_point
+    elif phase == 'to_stage':
         target_point = stage_point
     elif phase == 'to_exit':
         target_point = exit_point
 
     # Calculate the preferred velocity towards the target
-    speed_multiplier = 3.0
+    speed_multiplier = 2.0  # You can adjust this value to control the speed
     preferred_velocity = speed_multiplier * (target_point - positions) / np.linalg.norm(target_point - positions, axis=1, keepdims=True)
     
     # Add randomness
@@ -70,10 +68,6 @@ def social_force_model():
     
     # Ensure agents stay within the boundaries
     positions = np.clip(positions, 0, [width, height])
-    
-    # Check if the crowd has reached the stage and move to the exit
-    if np.all(np.linalg.norm(positions - stage_point, axis=1) < 10) and phase == 'to_stage':
-        phase = 'to_exit'
     
     return positions.tolist()
 
@@ -90,9 +84,8 @@ def static_proxy(path):
 # API route to run the simulation and return positions
 @app.route('/simulate', methods=['POST'])
 def simulate():
-    global phase
     phase = request.json.get('phase', 'to_stage')  # Get the phase from the request
-    positions = social_force_model()
+    positions = social_force_model(phase)
     return jsonify({'positions': positions})
 
 # Start the Flask application
