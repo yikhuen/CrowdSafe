@@ -30,6 +30,11 @@ def social_force_model():
 def serve():
     return send_from_directory(app.static_folder, 'index.html')
 
+# Serve other static files (e.g., script.js)
+@app.route('/<path:path>')
+def static_proxy(path):
+    return send_from_directory(app.static_folder, path)
+
 # API route to run the simulation and return positions
 @app.route('/simulate', methods=['POST'])
 def simulate():
@@ -39,5 +44,6 @@ def simulate():
 # Start the Flask application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
