@@ -90,6 +90,8 @@ def static_proxy(path):
 # API route to run the simulation and return positions
 @app.route('/simulate', methods=['POST'])
 def simulate():
+    global phase
+    phase = request.json.get('phase', 'to_stage')  # Get the phase from the request
     positions = social_force_model()
     return jsonify({'positions': positions})
 
