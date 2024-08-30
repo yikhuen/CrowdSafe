@@ -63,7 +63,7 @@ function updateData(data) {
             // Calculate the number of neighbors within an increased radius
             const neighbors = data.filter((other, j) => {
                 if (i === j) return false;  // Skip itself
-                return calculateDistance(d, other) < 10;  // Increased radius to 10 meters
+                return calculateDistance(d, other) < 30;  // Increased radius to 30 meters
             });
 
             // Change color based on the number of neighbors
