@@ -90,7 +90,19 @@ def static_proxy(path):
 # API route to run the simulation and return positions
 @app.route('/simulate', methods=['POST'])
 def simulate():
-    phase = request.json.get('phase', 'to_stage')  # Get the phase from the request
+    data = request.json
+    phase = data.get('phase', 'to_stage')  # Get the phase from the request
+    labels = data.get('labels')  # Get the updated label positions from the request
+    
+    if labels:
+        global entry_box, stage_box, exit_box
+        entry_box = np.array([[labels['entry']['x'] - 50, labels['entry']['y'] - 50],
+                              [labels['entry']['x'] + 50, labels['entry']['y'] + 50]])
+        stage_box = np.array([[labels['stage']['x'] - 50, labels['stage']['y'] - 50],
+                              [labels['stage']['x'] + 50, labels['stage']['y'] + 50]])
+        exit_box = np.array([[labels['exit']['x'] - 50, labels['exit']['y'] - 50],
+                             [labels['exit']['x'] + 50, labels['exit']['y'] + 50]])
+    
     positions = social_force_model(phase)
     return jsonify({'positions': positions})
 

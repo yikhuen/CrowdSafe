@@ -4,23 +4,50 @@ const height = +svg.attr("height");
 const updateInterval = 10;  // 10 ms for smoother animation
 const simulationDuration = 10000;  // 10 seconds for 1 hour simulation
 
-// Initial phase set to 'to_entry'
-let phase = 'to_entry';
+let phase = 'to_entry';  // Initial phase
 
-const labels = [
+let labels = [
     { x: 100, y: 100, label: 'Entry' },
     { x: 300, y: 300, label: 'Stage' },
     { x: 500, y: 500, label: 'Exit' }
 ];
 
-// Draw labeled spots
-svg.selectAll(".label")
-    .data(labels)
-    .enter().append("text")
-    .attr("class", "label")
-    .attr("x", d => d.x)
-    .attr("y", d => d.y)
-    .text(d => d.label);
+// Function to update label positions and redraw them
+function updateLabels() {
+    const labelElements = svg.selectAll(".label")
+        .data(labels);
+
+    labelElements.enter()
+        .append("text")
+        .attr("class", "label")
+        .merge(labelElements)
+        .attr("x", d => d.x)
+        .attr("y", d => d.y)
+        .text(d => d.label)
+        .call(d3.drag()
+            .on("start", dragStarted)
+            .on("drag", dragged)
+            .on("end", dragEnded));
+
+    labelElements.exit().remove();
+}
+
+// Drag event functions
+function dragStarted(event, d) {
+    d3.select(this).raise().classed("active", true);
+}
+
+function dragged(event, d) {
+    d.x = event.x;
+    d.y = event.y;
+    d3.select(this)
+        .attr("x", d.x)
+        .attr("y", d.y);
+}
+
+function dragEnded(event, d) {
+    d3.select(this).classed("active", false);
+}
 
 // Function to calculate Euclidean distance
 function calculateDistance(point1, point2) {
@@ -42,18 +69,19 @@ function updateData(data) {
         .attr("cx", d => d[0])
         .attr("cy", d => d[1])
         .style("fill", function(d, i) {
-            // Calculate the number of neighbors within an increased radius
             const neighbors = data.filter((other, j) => {
                 if (i === j) return false;  // Skip itself
-                return calculateDistance(d, other) < 30;  // Increased radius to 30 meters
+                return calculateDistance(d, other) < 3;  // Increased radius to 3 meters
             });
 
-            // Change color based on the number of neighbors
             return neighbors.length >= 5 ? "red" : "steelblue";
         });
 
     dots.exit().remove();
 }
+
+// Initialize the labels on the SVG
+updateLabels();
 
 document.getElementById("simulate").addEventListener("click", function() {
     // Reset the phase to 'to_entry' at the start of each simulation
@@ -68,11 +96,18 @@ document.getElementById("simulate").addEventListener("click", function() {
             phase = 'to_exit';  // Switch phase to move towards exit after 80% of time
         }
 
+        // Update the positions of the labels in the backend
+        const labelPositions = {
+            entry: labels[0],
+            stage: labels[1],
+            exit: labels[2]
+        };
+
         // Fetch and update positions
         fetch('/simulate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phase: phase })  // Send the current phase to the backend
+            body: JSON.stringify({ phase: phase, labels: labelPositions })  // Send the current phase and label positions to the backend
         })
         .then(response => response.json())
         .then(data => updateData(data.positions))
@@ -87,6 +122,8 @@ document.getElementById("simulate").addEventListener("click", function() {
         }
     }, updateInterval);
 });
+
+
 
 
 
