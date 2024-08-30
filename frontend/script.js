@@ -3,8 +3,9 @@ const width = +svg.attr("width");
 const height = +svg.attr("height");
 const updateInterval = 10;  // 10 ms for smoother animation
 const simulationDuration = 10000;  // 10 seconds for 1 hour simulation
-let currentTime = 0;  // Start time at 0 ms
-let phase = 'to_entry';  // Initial phase
+
+// Initial phase set to 'to_entry'
+let phase = 'to_entry';
 
 const labels = [
     { x: 100, y: 100, label: 'Entry' },
@@ -55,6 +56,10 @@ function updateData(data) {
 }
 
 document.getElementById("simulate").addEventListener("click", function() {
+    // Reset the phase to 'to_entry' at the start of each simulation
+    phase = 'to_entry';
+    currentTime = 0;  // Reset the current time as well
+
     const intervalId = setInterval(() => {
         // Control the phase transition
         if (currentTime > simulationDuration * 0.3 && phase === 'to_entry') {
@@ -82,6 +87,7 @@ document.getElementById("simulate").addEventListener("click", function() {
         }
     }, updateInterval);
 });
+
 
 
 
