@@ -55,7 +55,8 @@ def social_force_model():
         target_point = exit_point
 
     # Calculate the preferred velocity towards the target
-    preferred_velocity = (target_point - positions) / np.linalg.norm(target_point - positions, axis=1, keepdims=True)
+    speed_multiplier = 3.0
+    preferred_velocity = speed_multiplier * (target_point - positions) / np.linalg.norm(target_point - positions, axis=1, keepdims=True)
     
     # Add randomness
     noise = 0.2 * (np.random.rand(num_agents, 2) - 0.5)

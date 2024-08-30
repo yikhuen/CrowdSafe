@@ -1,7 +1,7 @@
 const svg = d3.select("#scatterplot");
 const width = +svg.attr("width");
 const height = +svg.attr("height");
-const updateInterval = 50;
+const updateInterval = 10;  // Decrease to 10 ms for more frequent updates
 
 const entry = { x: 100, y: 100, label: 'Entry' };
 const exit = { x: 500, y: 500, label: 'Exit' };
@@ -28,6 +28,9 @@ function updateData(data) {
         .attr("class", "dot")
         .attr("r", 5)
         .merge(dots)
+        .transition()  // Apply a smooth transition
+        .duration(updateInterval)  // Match the transition duration with the update interval
+        .ease(d3.easeLinear)  // Use linear easing for constant speed
         .attr("cx", d => d[0])
         .attr("cy", d => d[1]);
 
@@ -45,3 +48,4 @@ document.getElementById("simulate").addEventListener("click", function() {
         .catch(error => console.error('Error:', error));
     }, updateInterval);
 });
+
