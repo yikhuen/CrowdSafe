@@ -9,7 +9,9 @@ let phase = 'to_entry';  // Initial phase
 let labels = [
     { x: 100, y: 100, label: 'Entry' },
     { x: 300, y: 300, label: 'Stage' },
-    { x: 500, y: 500, label: 'Exit' }
+    { x: 500, y: 500, label: 'Exit' },
+    { x: 200, y: 200, label: 'Barrier 1' },
+    { x: 400, y: 400, label: 'Barrier 2' }
 ];
 
 // Function to update label positions and redraw them
@@ -100,7 +102,9 @@ document.getElementById("simulate").addEventListener("click", function() {
         const labelPositions = {
             entry: labels[0],
             stage: labels[1],
-            exit: labels[2]
+            exit: labels[2],
+            barrier1: labels[3],
+            barrier2: labels[4]
         };
 
         // Fetch and update positions

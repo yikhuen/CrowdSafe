@@ -8,10 +8,12 @@ app = Flask(__name__, static_folder='../frontend')
 num_agents = 100
 width, height = 600, 600
 
-# Define the boxes for entry, stage, and exit
+# Define the boxes for entry, stage, exit, and barriers
 entry_box = np.array([[50, 50], [150, 150]])  # Top-left and bottom-right corners of the entry box
 stage_box = np.array([[250, 250], [350, 350]])  # Stage box
 exit_box = np.array([[450, 450], [550, 550]])  # Exit box
+barrier1 = np.array([200, 200])  # Barrier 1 position
+barrier2 = np.array([400, 400])  # Barrier 2 position
 
 # Initialize positions and velocities
 positions = np.random.rand(num_agents, 2) * (entry_box[1] - entry_box[0]) + entry_box[0]
@@ -38,6 +40,13 @@ def orca_velocity(velocities, positions, preferred_velocity):
                     combined_radius_sq = combined_radius ** 2
                     if distance < combined_radius:
                         orca_velocity -= relative_position * (combined_radius_sq / (distance ** 2))
+        
+        # Avoid barriers
+        for barrier in [barrier1, barrier2]:
+            relative_position = barrier - positions[i]
+            distance = np.linalg.norm(relative_position)
+            if distance > 0 and distance < 50:  # Adjust the distance threshold as needed
+                orca_velocity -= relative_position / distance
         
         new_velocities[i] = orca_velocity
     
@@ -95,13 +104,15 @@ def simulate():
     labels = data.get('labels')  # Get the updated label positions from the request
     
     if labels:
-        global entry_box, stage_box, exit_box
+        global entry_box, stage_box, exit_box, barrier1, barrier2
         entry_box = np.array([[labels['entry']['x'] - 50, labels['entry']['y'] - 50],
                               [labels['entry']['x'] + 50, labels['entry']['y'] + 50]])
         stage_box = np.array([[labels['stage']['x'] - 50, labels['stage']['y'] - 50],
                               [labels['stage']['x'] + 50, labels['stage']['y'] + 50]])
         exit_box = np.array([[labels['exit']['x'] - 50, labels['exit']['y'] - 50],
                              [labels['exit']['x'] + 50, labels['exit']['y'] + 50]])
+        barrier1 = np.array([labels['barrier1']['x'], labels['barrier1']['y']])
+        barrier2 = np.array([labels['barrier2']['x'], labels['barrier2']['y']])
     
     positions = social_force_model(phase)
     return jsonify({'positions': positions})
@@ -109,6 +120,7 @@ def simulate():
 # Start the Flask application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
