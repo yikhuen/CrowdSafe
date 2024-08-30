@@ -71,7 +71,7 @@ function updateData(data) {
         .style("fill", function(d, i) {
             const neighbors = data.filter((other, j) => {
                 if (i === j) return false;  // Skip itself
-                return calculateDistance(d, other) < 3;  // Increased radius to 3 meters
+                return calculateDistance(d, other) < 30;  // Increased radius to 30 meters
             });
 
             return neighbors.length >= 5 ? "red" : "steelblue";
