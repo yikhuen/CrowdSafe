@@ -1,5 +1,5 @@
 document.getElementById('startButton').addEventListener('click', () => {
-    fetch('/simulate', { method: 'POST' })
+    fetch('/api/simulate', { method: 'POST' })
         .then(response => response.json())
         .then(data => {
             animateGrid(data);
@@ -23,3 +23,4 @@ function animateGrid(data) {
         }, index * 500);  // Adjust speed as needed
     });
 }
+

@@ -1,9 +1,8 @@
 import numpy as np
 import random
+from flask import Flask, jsonify
 
-def simulate_crowd_movement():
-    # Implement the Social Force Model to simulate crowd movement
-    # This is a simplified placeholder; implement the actual logic based on your requirements
+def handler(request):
     grid_size = 10
     steps = 50  # Number of steps in the simulation
 
@@ -25,4 +24,5 @@ def simulate_crowd_movement():
 
         grid_snapshots.append(grid.tolist())
 
-    return grid_snapshots
+    return jsonify(grid_snapshots)
+
