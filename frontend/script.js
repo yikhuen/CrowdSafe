@@ -21,25 +21,6 @@ svg.selectAll(".label")
     .attr("y", d => d.y)
     .text(d => d.label);
 
-// Timer setup
-const timerElement = document.createElement("span");
-timerElement.id = "timer";
-document.getElementById("simulate").insertAdjacentElement("afterend", timerElement);
-
-// Function to update the timer
-function updateTimer() {
-    let simulatedMinutes = Math.floor((currentTime / simulationDuration) * 60);  // Simulated time in minutes
-    let simulatedSeconds = Math.floor(((currentTime / simulationDuration) * 3600) % 60);  // Simulated seconds
-
-    // Ensure the timer reads exactly 60 minutes and 0 seconds at the end
-    if (currentTime >= simulationDuration) {
-        simulatedMinutes = 60;
-        simulatedSeconds = 0;
-    }
-
-    timerElement.innerText = ` Time: ${simulatedMinutes}m ${simulatedSeconds}s`;
-}
-
 // Function to calculate Euclidean distance
 function calculateDistance(point1, point2) {
     return Math.sqrt(Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2));
@@ -63,7 +44,7 @@ function updateData(data) {
             // Calculate the number of neighbors within an increased radius
             const neighbors = data.filter((other, j) => {
                 if (i === j) return false;  // Skip itself
-                return calculateDistance(d, other) < 30;  // Increased radius to 30 meters
+                return calculateDistance(d, other) < 3;  // Increased radius to 3 meters
             });
 
             // Change color based on the number of neighbors
@@ -75,9 +56,6 @@ function updateData(data) {
 
 document.getElementById("simulate").addEventListener("click", function() {
     const intervalId = setInterval(() => {
-        // Update the timer
-        updateTimer();
-
         // Control the phase transition
         if (currentTime > simulationDuration * 0.3 && phase === 'to_entry') {
             phase = 'to_stage';  // Switch phase to move towards stage
@@ -104,6 +82,7 @@ document.getElementById("simulate").addEventListener("click", function() {
         }
     }, updateInterval);
 });
+
 
 
 
