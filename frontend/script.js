@@ -1,7 +1,7 @@
 const svg = d3.select("#scatterplot");
 const width = +svg.attr("width");
 const height = +svg.attr("height");
-const updateInterval = 500;
+const updateInterval = 50;
 
 const entry = { x: 100, y: 100, label: 'Entry' };
 const exit = { x: 500, y: 500, label: 'Exit' };
