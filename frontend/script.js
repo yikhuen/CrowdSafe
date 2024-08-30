@@ -60,10 +60,10 @@ function updateData(data) {
         .attr("cx", d => d[0])
         .attr("cy", d => d[1])
         .style("fill", function(d, i) {
-            // Calculate the number of neighbors within 1 meter
+            // Calculate the number of neighbors within an increased radius
             const neighbors = data.filter((other, j) => {
                 if (i === j) return false;  // Skip itself
-                return calculateDistance(d, other) < 1;
+                return calculateDistance(d, other) < 10;  // Increased radius to 10 meters
             });
 
             // Change color based on the number of neighbors
@@ -104,6 +104,7 @@ document.getElementById("simulate").addEventListener("click", function() {
         }
     }, updateInterval);
 });
+
 
 
 
