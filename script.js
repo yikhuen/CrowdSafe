@@ -1,27 +1,38 @@
-document.getElementById('startButton').addEventListener('click', () => {
-    fetch('/api/simulate', { method: 'POST' })
-        .then(response => response.json())
-        .then(data => {
-            animateGrid(data);
-        })
-        .catch(error => console.error('Error:', error));
-});
+const svg = d3.select("#scatterplot");
+const width = +svg.attr("width");
+const height = +svg.attr("height");
+const numPoints = 100;
+const updateInterval = 500;
 
-function animateGrid(data) {
-    const grid = document.getElementById('grid');
+// Generate initial random data points
+let data = d3.range(numPoints).map(() => ({
+    x: Math.random() * width,
+    y: Math.random() * height
+}));
 
-    data.forEach((snapshot, index) => {
-        setTimeout(() => {
-            grid.innerHTML = '';
-            snapshot.forEach((row, rowIndex) => {
-                row.forEach((cell, colIndex) => {
-                    const div = document.createElement('div');
-                    if (cell > 0) div.className = 'crowd';
-                    grid.appendChild(div);
-                });
-            });
-        }, index * 500);  // Adjust speed as needed
-    });
+// Create the scatter plot
+const dots = svg.selectAll(".dot")
+    .data(data)
+    .enter().append("circle")
+    .attr("class", "dot")
+    .attr("r", 5)
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y);
+
+// Function to update the scatter plot
+function updateData() {
+    // Move points in random directions
+    data = data.map(d => ({
+        x: Math.max(0, Math.min(width, d.x + (Math.random() - 0.5) * 20)),
+        y: Math.max(0, Math.min(height, d.y + (Math.random() - 0.5) * 20))
+    }));
+
+    dots.data(data)
+        .transition()
+        .duration(updateInterval)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y);
 }
 
-
+// Set the interval to update the data
+setInterval(updateData, updateInterval);

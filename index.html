@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crowd Movement Simulation</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Scatter Plot Simulation</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        /* Add some basic styles */
+        .dot {
+            fill: steelblue;
+        }
+    </style>
 </head>
 <body>
-    <div id="grid"></div>
-    <button id="startButton">Start Simulation</button>
-
+    <svg id="scatterplot" width="600" height="600"></svg>
     <script src="script.js"></script>
 </body>
 </html>
-
