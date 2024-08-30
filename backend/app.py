@@ -7,13 +7,14 @@ app = Flask(__name__, static_folder='../frontend')
 # Simulation parameters
 num_agents = 100
 width, height = 600, 600
-entry_point = np.array([100, 100])
-exit_point = np.array([500, 500])
-stage_point = np.array([300, 300])
-divider_point = np.array([300, 100])
 
-# Initialize positions at the entry point
-positions = np.random.rand(num_agents, 2) * 10 + entry_point  # Start close to the entry point
+# Define the boxes for entry, stage, and exit
+entry_box = np.array([[50, 50], [150, 150]])  # Top-left and bottom-right corners of the entry box
+stage_box = np.array([[250, 250], [350, 350]])  # Stage box
+exit_box = np.array([[450, 450], [550, 550]])  # Exit box
+
+# Initialize positions at the entry box
+positions = np.random.rand(num_agents, 2) * (entry_box[1] - entry_box[0]) + entry_box[0]
 
 # Initialize velocities
 velocities = np.zeros((num_agents, 2))
@@ -46,15 +47,18 @@ def social_force_model(phase):
     
     # Define the target point based on the current phase
     if phase == 'to_entry':
-        target_point = entry_point
+        target_box = entry_box
     elif phase == 'to_stage':
-        target_point = stage_point
+        target_box = stage_box
     elif phase == 'to_exit':
-        target_point = exit_point
+        target_box = exit_box
 
-    # Calculate the preferred velocity towards the target
-    speed_multiplier = 2.0  # You can adjust this value to control the speed
-    preferred_velocity = speed_multiplier * (target_point - positions) / np.linalg.norm(target_point - positions, axis=1, keepdims=True)
+    # Calculate the center of the target box
+    target_center = target_box.mean(axis=0)
+    
+    # Calculate the preferred velocity towards the center of the target box
+    speed_multiplier = 2.0  # Adjust this value to control the speed
+    preferred_velocity = speed_multiplier * (target_center - positions) / np.linalg.norm(target_center - positions, axis=1, keepdims=True)
     
     # Add randomness
     noise = 0.2 * (np.random.rand(num_agents, 2) - 0.5)
@@ -91,6 +95,7 @@ def simulate():
 # Start the Flask application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 

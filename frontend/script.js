@@ -4,14 +4,13 @@ const height = +svg.attr("height");
 const updateInterval = 10;  // 10 ms for smoother animation
 const simulationDuration = 10000;  // 10 seconds for 1 hour simulation
 let currentTime = 0;  // Start time at 0 ms
-let phase = 'to_stage';  // Initial phase
+let phase = 'to_entry';  // Initial phase
 
-const entry = { x: 100, y: 100, label: 'Entry' };
-const exit = { x: 500, y: 500, label: 'Exit' };
-const stage = { x: 300, y: 300, label: 'Stage' };
-const divider = { x: 300, y: 100, label: 'Divider' };
-
-const labels = [entry, exit, stage, divider];
+const labels = [
+    { x: 100, y: 100, label: 'Entry' },
+    { x: 300, y: 300, label: 'Stage' },
+    { x: 500, y: 500, label: 'Exit' }
+];
 
 // Draw labeled spots
 svg.selectAll(".label")
@@ -58,8 +57,10 @@ document.getElementById("simulate").addEventListener("click", function() {
         updateTimer();
 
         // Control the phase transition
-        if (currentTime > simulationDuration * 0.8 && phase === 'to_stage') {
-            phase = 'to_exit';  // Switch phase to move towards exit near the end
+        if (currentTime > simulationDuration * 0.3 && phase === 'to_entry') {
+            phase = 'to_stage';  // Switch phase to move towards stage
+        } else if (currentTime > simulationDuration * 0.6 && phase === 'to_stage') {
+            phase = 'to_exit';  // Switch phase to move towards exit
         }
 
         // Fetch and update positions
@@ -81,5 +82,6 @@ document.getElementById("simulate").addEventListener("click", function() {
         }
     }, updateInterval);
 });
+
 
 
