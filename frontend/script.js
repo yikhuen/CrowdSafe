@@ -61,11 +61,11 @@ document.getElementById("simulate").addEventListener("click", function() {
     currentTime = 0;  // Reset the current time as well
 
     const intervalId = setInterval(() => {
-        // Control the phase transition
-        if (currentTime > simulationDuration * 0.3 && phase === 'to_entry') {
-            phase = 'to_stage';  // Switch phase to move towards stage
-        } else if (currentTime > simulationDuration * 0.6 && phase === 'to_stage') {
-            phase = 'to_exit';  // Switch phase to move towards exit
+        // Adjust the phase transition timings
+        if (currentTime > simulationDuration * 0.2 && phase === 'to_entry') {
+            phase = 'to_stage';  // Switch phase to move towards stage after 20% of time
+        } else if (currentTime > simulationDuration * 0.8 && phase === 'to_stage') {
+            phase = 'to_exit';  // Switch phase to move towards exit after 80% of time
         }
 
         // Fetch and update positions
@@ -87,6 +87,7 @@ document.getElementById("simulate").addEventListener("click", function() {
         }
     }, updateInterval);
 });
+
 
 
 
