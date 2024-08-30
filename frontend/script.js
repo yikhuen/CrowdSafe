@@ -30,6 +30,13 @@ document.getElementById("simulate").insertAdjacentElement("afterend", timerEleme
 function updateTimer() {
     let simulatedMinutes = Math.floor((currentTime / simulationDuration) * 60);  // Simulated time in minutes
     let simulatedSeconds = Math.floor(((currentTime / simulationDuration) * 3600) % 60);  // Simulated seconds
+
+    // Ensure the timer reads exactly 60 minutes and 0 seconds at the end
+    if (currentTime >= simulationDuration) {
+        simulatedMinutes = 60;
+        simulatedSeconds = 0;
+    }
+
     timerElement.innerText = ` Time: ${simulatedMinutes}m ${simulatedSeconds}s`;
 }
 
@@ -82,6 +89,7 @@ document.getElementById("simulate").addEventListener("click", function() {
         }
     }, updateInterval);
 });
+
 
 
 
