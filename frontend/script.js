@@ -94,7 +94,7 @@ function startFlowSimulation() {
         // Continuous flow transition
         if (currentTime > 2000 && phase === 'to_entry') {
             phase = 'to_stage';  // Switch to the stage phase
-        } else if (currentTime > 8000 && phase === 'to_stage') {
+        } else if (currentTime > 5000 && phase === 'to_stage') {  // Adjusted timing to 5 seconds
             phase = 'to_exit';  // Switch to the exit phase
         }
 
@@ -117,8 +117,8 @@ function startFlowSimulation() {
 
         currentTime += updateInterval;
 
-        // Stop after a certain duration if necessary
-        if (currentTime >= 10000) {
+        // Stop the simulation after 8 seconds
+        if (currentTime >= 8000) {
             clearInterval(intervalId);
         }
     }, updateInterval);
@@ -140,6 +140,7 @@ document.getElementById("simulate").addEventListener("click", function() {
 document.getElementById("pause").addEventListener("click", function() {
     pauseSimulation();
 });
+
 
 
 

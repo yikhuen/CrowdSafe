@@ -68,8 +68,8 @@ def social_force_model(phase):
     # Calculate the center of the target box
     target_center = target_box.mean(axis=0)
     
-    # Calculate the preferred velocity towards the center of the target box
-    speed_multiplier = 2.0  # Adjust this value to control the speed
+    # Increase the speed multiplier for faster movement
+    speed_multiplier = 5.0  # Increase speed to make the simulation run faster
     preferred_velocity = speed_multiplier * (target_center - positions) / np.linalg.norm(target_center - positions, axis=1, keepdims=True)
     
     # Add randomness
