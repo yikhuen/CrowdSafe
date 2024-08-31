@@ -2,9 +2,10 @@ const svg = d3.select("#scatterplot");
 const width = +svg.attr("width");
 const height = +svg.attr("height");
 const updateInterval = 10;  // 10 ms for smoother animation
-const simulationDuration = 10000;  // 10 seconds for 1 hour simulation
 
 let phase = 'to_entry';  // Initial phase
+let currentTime = 0;  // Track simulation time
+let intervalId = null;  // Store the interval ID for pausing and resuming
 
 let labels = [
     { x: 100, y: 100, label: 'Entry' },
@@ -73,7 +74,7 @@ function updateData(data) {
         .style("fill", function(d, i) {
             const neighbors = data.filter((other, j) => {
                 if (i === j) return false;  // Skip itself
-                return calculateDistance(d, other) < 30;  // Increased radius to 30 meters
+                return calculateDistance(d, other) < 25;  // Increased radius to 25 meters
             });
 
             return neighbors.length >= 5 ? "red" : "steelblue";
@@ -85,20 +86,18 @@ function updateData(data) {
 // Initialize the labels on the SVG
 updateLabels();
 
-document.getElementById("simulate").addEventListener("click", function() {
-    // Reset the phase to 'to_entry' at the start of each simulation
+function startFlowSimulation() {
     phase = 'to_entry';
-    currentTime = 0;  // Reset the current time as well
+    currentTime = 0;
 
-    const intervalId = setInterval(() => {
-        // Adjust the phase transition timings
-        if (currentTime > simulationDuration * 0.2 && phase === 'to_entry') {
-            phase = 'to_stage';  // Switch phase to move towards stage after 20% of time
-        } else if (currentTime > simulationDuration * 0.8 && phase === 'to_stage') {
-            phase = 'to_exit';  // Switch phase to move towards exit after 80% of time
+    intervalId = setInterval(() => {
+        // Continuous flow transition
+        if (currentTime > 2000 && phase === 'to_entry') {
+            phase = 'to_stage';  // Switch to the stage phase
+        } else if (currentTime > 8000 && phase === 'to_stage') {
+            phase = 'to_exit';  // Switch to the exit phase
         }
 
-        // Update the positions of the labels in the backend
         const labelPositions = {
             entry: labels[0],
             stage: labels[1],
@@ -107,25 +106,41 @@ document.getElementById("simulate").addEventListener("click", function() {
             barrier2: labels[4]
         };
 
-        // Fetch and update positions
         fetch('/simulate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phase: phase, labels: labelPositions })  // Send the current phase and label positions to the backend
+            body: JSON.stringify({ phase: phase, labels: labelPositions })
         })
         .then(response => response.json())
         .then(data => updateData(data.positions))
         .catch(error => console.error('Error:', error));
 
-        // Increment the current time
         currentTime += updateInterval;
 
-        // Stop the simulation after the duration
-        if (currentTime >= simulationDuration) {
+        // Stop after a certain duration if necessary
+        if (currentTime >= 10000) {
             clearInterval(intervalId);
         }
     }, updateInterval);
+}
+
+function pauseSimulation() {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+}
+
+document.getElementById("simulate").addEventListener("click", function() {
+    if (intervalId === null) {
+        startFlowSimulation();
+    }
 });
+
+document.getElementById("pause").addEventListener("click", function() {
+    pauseSimulation();
+});
+
 
 
 
