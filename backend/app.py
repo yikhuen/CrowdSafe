@@ -45,8 +45,8 @@ def orca_velocity(velocities, positions, preferred_velocity):
         for barrier in [barrier1, barrier2]:
             relative_position = barrier - positions[i]
             distance = np.linalg.norm(relative_position)
-            if distance > 0 and distance < 20:  # Strongly avoid the barrier within 20 meters
-                avoidance_strength = (20 - distance) / distance  # Strong repulsion when closer to the barrier
+            if distance > 0 and distance < 50:  # Strongly avoid the barrier within 50 meters
+                avoidance_strength = (50 - distance) / distance  # Strong repulsion when closer to the barrier
                 orca_velocity -= 10 * avoidance_strength * relative_position / distance
         
         new_velocities[i] = orca_velocity
