@@ -92,9 +92,9 @@ function startFlowSimulation() {
 
     intervalId = setInterval(() => {
         // Continuous flow transition
-        if (currentTime > 3000 && phase === 'to_entry') {  // Switch after 3 seconds
+        if (currentTime > 2000 && phase === 'to_entry') {  // Switch after 2 seconds
             phase = 'to_stage';  // Switch to the stage phase
-        } else if (currentTime > 6000 && phase === 'to_stage') {  // Switch after 3 more seconds
+        } else if (currentTime > 4000 && phase === 'to_stage') {  // Switch after 2 more seconds
             phase = 'to_exit';  // Switch to the exit phase
         }
 
@@ -117,8 +117,8 @@ function startFlowSimulation() {
 
         currentTime += updateInterval;
 
-        // Stop the simulation after 9 seconds
-        if (currentTime >= 9000) {
+        // Stop the simulation after 6 seconds
+        if (currentTime >= 6000) {
             clearInterval(intervalId);
         }
     }, updateInterval);
@@ -140,8 +140,6 @@ document.getElementById("simulate").addEventListener("click", function() {
 document.getElementById("pause").addEventListener("click", function() {
     pauseSimulation();
 });
-
-
 
 
 
