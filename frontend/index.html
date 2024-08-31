@@ -13,7 +13,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-image: url('neeqolah-creative-works-t1VidUSawt0-unsplash.jpg');  /* New Background image */
+            background-image: url('neeqolah-creative-works-t1VidUSawt0-unsplash.jpg');  /* Background image */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -23,19 +23,19 @@
 
         .container {
             display: flex;
-            width: 85%;  /* Reduced to 85% to avoid overlap */
+            width: 85%;  /* Adjusted to 85% to ensure there's enough space for all elements */
             height: 600px;
             align-items: center;
             position: relative;
         }
 
         #simulation {
-            width: 50%;  /* Reduced to 50% of the container width */
+            width: 50%;  /* Simulation takes up 50% of the container width */
             height: 100%;
-            background-color: white;  /* Simulation area background */
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);  /* Slight shadow for emphasis */
+            background-color: white;  /* Background color for simulation area */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);  /* Light shadow for emphasis */
             position: relative;
-            margin-right: 20px; /* Added margin to ensure separation */
+            margin-right: 20px; /* Added margin to separate from text */
         }
 
         #scatterplot {
@@ -65,11 +65,11 @@
         }
 
         .info {
-            flex: 1;  /* Make the info section flexible */
+            flex: 1;  /* Allows the info section to fill available space */
             text-align: center;
             padding: 20px;
             color: white;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);  /* Add a slight shadow for readability */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);  /* Slight shadow for text readability */
         }
 
         .info h1 {
@@ -80,6 +80,12 @@
         .info p {
             font-size: 1.2rem;
             line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        #maxDensity {
+            font-size: 1.5rem;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -95,11 +101,13 @@
             <p>
                 CrowdSafe simulates the movement of crowds through event spaces, providing a model to help event planners plan efficient layouts to mitigate dangerous overcrowding.
             </p>
+            <div id="maxDensity">Max Crowd Density: 0</div>  <!-- Display max crowd density -->
         </div>
     </div>
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 

@@ -6,6 +6,7 @@ const updateInterval = 10;  // 10 ms for smoother animation
 let phase = 'to_entry';  // Initial phase
 let currentTime = 0;  // Track simulation time
 let intervalId = null;  // Store the interval ID for pausing and resuming
+let maxCrowdDensity = 0;  // Track the maximum crowd density
 
 let labels = [
     { x: 100, y: 100, label: 'Entry' },
@@ -62,6 +63,9 @@ function updateData(data) {
     const dots = svg.selectAll(".dot")
         .data(data);
 
+    // Calculate the current crowd density
+    let currentMaxDensity = 0;
+
     dots.enter().append("circle")
         .attr("class", "dot")
         .attr("r", 5)
@@ -77,8 +81,15 @@ function updateData(data) {
                 return calculateDistance(d, other) < 25;  // Increased radius to 25 meters
             });
 
+            currentMaxDensity = Math.max(currentMaxDensity, neighbors.length);
             return neighbors.length >= 5 ? "red" : "steelblue";
         });
+
+    // Update maximum crowd density if the current density exceeds the previous maximum
+    maxCrowdDensity = Math.max(maxCrowdDensity, currentMaxDensity);
+
+    // Update the maximum crowd density display
+    document.getElementById("maxDensity").innerText = `Max Crowd Density: ${maxCrowdDensity}`;
 
     dots.exit().remove();
 }
@@ -89,12 +100,13 @@ updateLabels();
 function startFlowSimulation() {
     phase = 'to_entry';
     currentTime = 0;
+    maxCrowdDensity = 0;  // Reset max crowd density at the start of the simulation
 
     intervalId = setInterval(() => {
         // Continuous flow transition
-        if (currentTime > 2000 && phase === 'to_entry') {  // Switch after 2 seconds
+        if (currentTime > 1000 && phase === 'to_entry') {
             phase = 'to_stage';  // Switch to the stage phase
-        } else if (currentTime > 4000 && phase === 'to_stage') {  // Switch after 2 more seconds
+        } else if (currentTime > 3000 && phase === 'to_stage') {
             phase = 'to_exit';  // Switch to the exit phase
         }
 
@@ -117,7 +129,7 @@ function startFlowSimulation() {
 
         currentTime += updateInterval;
 
-        // Stop the simulation after 6 seconds
+        // Stop after a certain duration if necessary
         if (currentTime >= 6000) {
             clearInterval(intervalId);
         }
@@ -140,6 +152,8 @@ document.getElementById("simulate").addEventListener("click", function() {
 document.getElementById("pause").addEventListener("click", function() {
     pauseSimulation();
 });
+
+
 
 
 
